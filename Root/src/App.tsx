@@ -1,11 +1,29 @@
 import { useState } from 'react'
 import { validatedConfig } from './config/validate'
-import type { Section } from './config/types'
+import type { Section, SectionItem } from './config/types'
 import './App.css'
+
+const SERVICE_IMAGES: Record<string, string> = {
+  Plumbing:
+    'https://images.pexels.com/photos/32588548/pexels-photo-32588548.jpeg?auto=compress&cs=tinysrgb&w=600',
+  Electrical:
+    'https://images.pexels.com/photos/257736/pexels-photo-257736.jpeg?auto=compress&cs=tinysrgb&w=600',
+  HVAC:
+    'https://images.pexels.com/photos/7347538/pexels-photo-7347538.jpeg?auto=compress&cs=tinysrgb&w=600',
+}
+
+/* Keep in-page anchors in the same tab; external URLs open in a new one. */
+function externalLinkProps(url: string) {
+  return url.startsWith('#')
+    ? {}
+    : { target: '_blank', rel: 'noopener noreferrer' }
+}
 
 /* ── Hero ────────────────────────────────────────────────────────────── */
 
 function HeroSection({ section }: { section: Section }) {
+  const ctaUrl = section.buttonUrl ?? '#services'
+
   return (
     <section className="hero-section" id={section.id}>
       <div className="hero-container">
@@ -17,13 +35,8 @@ function HeroSection({ section }: { section: Section }) {
             <h1 className="hero-heading">{section.heading}</h1>
             <p className="hero-description">{section.description}</p>
             <div className="hero-actions">
-              <a
-                className="btn-primary"
-                href={section.buttonUrl ?? '#contact'}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Contact Us
+              <a className="btn-primary" href={ctaUrl} {...externalLinkProps(ctaUrl)}>
+                Explore Services
               </a>
               <a className="btn-secondary" href="#services">
                 Learn More
@@ -47,6 +60,66 @@ function HeroSection({ section }: { section: Section }) {
 
 /* ── Features / Services ─────────────────────────────────────────────── */
 
+function ServiceCard({
+  sectionId,
+  item,
+  index,
+}: {
+  sectionId: string
+  item: SectionItem
+  index: number
+}) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const detailsId = `service-details-${sectionId}-${index}`
+  const details = item.details ?? []
+
+  return (
+    <article className="service-card">
+      <div className="service-image">
+        <img
+          src={SERVICE_IMAGES[item.title] ?? SERVICE_IMAGES.Plumbing}
+          alt={`Home services: ${item.title}`}
+          width={600}
+          height={400}
+        />
+      </div>
+
+      <div className="service-content">
+        <h3 className="service-title">{item.title}</h3>
+        <p className="service-description">{item.description}</p>
+      </div>
+
+      {details.length > 0 && (
+        <>
+          <button
+            type="button"
+            className="service-link"
+            aria-expanded={isExpanded}
+            aria-controls={detailsId}
+            onClick={() => setIsExpanded((prev) => !prev)}
+          >
+            Learn more
+            <span aria-hidden="true"> →</span>
+          </button>
+
+          <div
+            className={`service-details-wrap${isExpanded ? ' is-expanded' : ''}`}
+            aria-hidden={!isExpanded}
+          >
+            <div className="service-details-clip">
+              <ul className="service-details" id={detailsId}>
+                {details.map((detail, detailIndex) => (
+                  <li key={`${detailsId}-${detailIndex}`}>{detail}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </>
+      )}
+    </article>
+  )
+}
+
 function FeaturesSection({ section }: { section: Section }) {
   return (
     <section className="content-section" id={section.id}>
@@ -59,29 +132,12 @@ function FeaturesSection({ section }: { section: Section }) {
 
         <div className="services-grid">
           {section.items?.map((item, index) => (
-            <article
+            <ServiceCard
               key={`${section.id}-${index}`}
-              className="service-card"
-            >
-              <div className="service-image">
-                <img
-                  src={`https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80`}
-                  alt={`Home services: ${item.title}`}
-                  width={600}
-                  height={400}
-                />
-              </div>
-
-              <div className="service-content">
-                <h3 className="service-title">{item.title}</h3>
-                <p className="service-description">{item.description}</p>
-              </div>
-
-              <a href="#contact" className="service-link">
-                Learn more
-                <span aria-hidden="true"> →</span>
-              </a>
-            </article>
+              sectionId={section.id}
+              item={item}
+              index={index}
+            />
           ))}
         </div>
       </div>
@@ -93,10 +149,11 @@ function FeaturesSection({ section }: { section: Section }) {
 
 function AboutSection({ section }: { section: Section }) {
   return (
-    <section className="about-section">
+    <section className="about-section" id={section.id}>
       <div className="section-inner">
         <div className="about-grid">
           <div className="about-content">
+            <h2 className="about-title">{section.heading}</h2>
             <p className="about-text">{section.description}</p>
           </div>
 
@@ -117,6 +174,12 @@ function AboutSection({ section }: { section: Section }) {
 /* ── CTA ─────────────────────────────────────────────────────────────── */
 
 function CtaSection({ section }: { section: Section }) {
+  const { heading, description, buttonText, buttonUrl } = section
+
+  if (!heading || !description) {
+    return null
+  }
+
   return (
     <section className="cta-section" id={section.id}>
       <div className="cta-inner">
@@ -124,19 +187,20 @@ function CtaSection({ section }: { section: Section }) {
 
         <div>
           <span className="cta-eyebrow">Get in touch</span>
-          <h2 className="cta-title">{section.heading}</h2>
-          <p className="cta-description">{section.description}</p>
+          <h2 className="cta-title">{heading}</h2>
+          <p className="cta-description">{description}</p>
         </div>
 
-        <a
-          className="cta-button"
-          href={section.buttonUrl ?? 'https://example.com/contact'}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {section.buttonText}
-          <span aria-hidden="true"> →</span>
-        </a>
+        {buttonText && buttonUrl && (
+          <a
+            className="cta-button"
+            href={buttonUrl}
+            {...externalLinkProps(buttonUrl)}
+          >
+            {buttonText}
+            <span aria-hidden="true"> →</span>
+          </a>
+        )}
       </div>
     </section>
   )
@@ -220,7 +284,7 @@ function App() {
                 key={section.id}
                 href={`#${section.id}`}
                 className={
-                  section.id === 'hero' ? 'nav-link active' : 'nav-link'
+                  section.type === 'hero' ? 'nav-link active' : 'nav-link'
                 }
               >
                 {section.type === 'hero' ? 'Home' : section.heading}

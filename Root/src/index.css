@@ -89,6 +89,7 @@
   --container-max: 1280px;
   --container-padding: 1.5rem;
   --container-padding-lg: 3rem;
+  --header-height: 72px;
 
   /* Border Radius */
   --radius-sm: 6px;
@@ -146,6 +147,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+section[id] {
+  scroll-margin-top: var(--header-height);
 }
 
 /* Typography */

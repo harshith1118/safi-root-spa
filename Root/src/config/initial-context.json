@@ -2,12 +2,12 @@
   "templateVersion": "1.0.0",
   "pathName": "sample-home-services",
   "displayName": "Sample Home Services",
-  "title": "Trusted Home Services for Every Need",
+  "title": "Home Services for Every Need",
   "subtitle": "Professional plumbing, electrical, and HVAC solutions delivered with care.",
   "theme": "clean",
   "sections": [
     {
-      "id": "hero",
+      "id": "home",
       "type": "hero",
       "heading": "Welcome to Sample Home Services",
       "description": "Your reliable partner for home maintenance and repairs. We deliver quality service with a smile."
@@ -20,31 +20,49 @@
       "items": [
         {
           "title": "Plumbing",
-          "description": "Expert plumbing repairs, installations, and maintenance for residential properties."
+          "description": "Expert plumbing repairs, installations, and maintenance for residential properties.",
+          "details": [
+            "Plumbing repairs",
+            "Leak detection",
+            "Pipe installation",
+            "Routine maintenance"
+          ]
         },
         {
           "title": "Electrical",
-          "description": "Safe and reliable electrical services from licensed professionals."
+          "description": "Safe and reliable electrical repairs, installations, and safety checks for your home.",
+          "details": [
+            "Electrical repairs",
+            "Wiring and lighting installation",
+            "Electrical installations",
+            "Electrical safety checks"
+          ]
         },
         {
           "title": "HVAC",
-          "description": "Heating, ventilation, and air conditioning installation and repair."
+          "description": "Heating, ventilation, and air conditioning installation and repair.",
+          "details": [
+            "Air-conditioning installation",
+            "HVAC servicing",
+            "Ventilation",
+            "Routine maintenance"
+          ]
         }
       ]
     },
     {
-      "id": "about",
+      "id": "about-us",
       "type": "text",
       "heading": "About Us",
-      "description": "With over 10 years of experience, Sample Home Services has built a reputation for excellence in home maintenance. Our team of certified professionals is dedicated to providing top-quality service and ensuring your complete satisfaction."
+      "description": "Sample Home Services helps homeowners keep up with maintenance and repairs through dependable workmanship and clear communication. We focus on doing the job carefully and treating your home with respect."
     },
     {
       "id": "contact",
       "type": "cta",
       "heading": "Get Started Today",
-      "description": "Ready to experience exceptional home services? Contact us for a free consultation and let us help you keep your home in perfect condition.",
-      "buttonText": "Contact Us",
-      "buttonUrl": "https://example.com/contact"
+      "description": "Ready to get started? Browse our services to see how we can help keep your home running smoothly.",
+      "buttonText": "Explore Services",
+      "buttonUrl": "#services"
     }
   ]
 }

@@ -53,7 +53,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
-  height: 72px;
+  height: var(--header-height);
   padding: 0 var(--container-padding);
   max-width: var(--container-max);
   margin: 0 auto;
@@ -167,7 +167,7 @@
 /* Mobile Navigation */
 .mobile-nav {
   position: fixed;
-  top: 72px;
+  top: var(--header-height);
   left: 0;
   right: 0;
   background: var(--color-white);
@@ -197,6 +197,16 @@
 
 .mobile-nav-link:last-child {
   border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .site-nav {
+    display: none;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+  }
 }
 
 /* Buttons */
@@ -473,6 +483,8 @@
 .services-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  align-items: start;
   gap: var(--space-8);
 }
 
@@ -485,7 +497,6 @@
   transition: border-color var(--transition-base), box-shadow var(--transition-base);
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .service-card:hover {
@@ -550,25 +561,81 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: 600;
+  line-height: var(--leading-normal);
   color: var(--color-forest);
   text-decoration: none;
-  padding: var(--space-2) 0;
+  padding: var(--space-2) var(--space-6);
   position: relative;
+  white-space: nowrap;
+  text-align: left;
 }
 
-.service-link::after {
-  content: '';
-  display: inline-block;
-  width: 0;
-  height: 1px;
-  background: var(--color-forest);
-  transition: width var(--transition-base);
+/* Animated disclosure.
+   The grid row transitions 0fr -> 1fr so the card grows with its content.
+   Visibility only flips after the collapse finishes, which keeps the
+   collapsed state out of the accessibility tree and takes no layout space. */
+.service-details-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 340ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s linear 340ms;
 }
 
-.service-link:hover::after {
-  width: 100%;
+.service-details-wrap.is-expanded {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows 340ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    visibility 0s;
+}
+
+.service-details-clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.service-details {
+  margin: 0;
+  padding: var(--space-3) var(--space-6) var(--space-6)
+    calc(var(--space-6) + var(--space-4));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  transition:
+    opacity 200ms ease,
+    transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.service-details-wrap.is-expanded .service-details {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 260ms ease 80ms,
+    transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1) 40ms;
+}
+
+.service-details li::marker {
+  color: var(--color-forest);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .service-details-wrap,
+  .service-details-wrap.is-expanded,
+  .service-details,
+  .service-details-wrap.is-expanded .service-details {
+    transition: none;
+    transform: none;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -596,6 +663,7 @@
 /* About Section */
 .about-section {
   background: var(--bg-tertiary);
+  padding: var(--space-24) var(--container-padding);
 }
 
 .about-grid {
@@ -607,6 +675,13 @@
 
 .about-content {
   max-width: 560px;
+}
+
+.about-title {
+  font-size: var(--text-4xl);
+  line-height: var(--leading-tight);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
 }
 
 .about-text {
@@ -648,6 +723,14 @@
 }
 
 @media (max-width: 768px) {
+  .about-section {
+    padding: var(--space-16) var(--container-padding);
+  }
+
+  .about-title {
+    font-size: var(--text-3xl);
+  }
+
   .about-image {
     height: 300px;
   }
@@ -674,7 +757,7 @@
   background: var(--color-forest);
   border-radius: var(--radius-xl);
   margin: 0 var(--container-padding);
-  z-index: 0;
+  z-index: -1;
 }
 
 @media (min-width: 1024px) {

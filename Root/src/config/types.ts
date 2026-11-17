@@ -17,6 +17,7 @@ export type SectionType =
 export interface SectionItem {
   title: string
   description: string
+  details?: string[]
 }
 
 export interface Section {

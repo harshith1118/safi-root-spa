@@ -95,6 +95,17 @@
                   "type": "string",
                   "minLength": 1,
                   "maxLength": 300
+                },
+                "details": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "description": "Optional expandable detail lines for this item"
                 }
               }
             },
@@ -108,8 +119,11 @@
           },
           "buttonUrl": {
             "type": "string",
-            "format": "uri",
-            "description": "Call-to-action button URL"
+            "anyOf": [
+              { "format": "uri" },
+              { "pattern": "^#[a-z0-9-]+$" }
+            ],
+            "description": "Call-to-action button URL (absolute URL or same-page #section-id)"
           }
         }
       },

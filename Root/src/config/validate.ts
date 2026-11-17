@@ -55,6 +55,17 @@ function buildErrorMessage(errors: ErrorObject[]): string {
  * Only HTTP and HTTPS protocols are permitted.
  */
 function validateCtaUrl(sectionId: string, url: string): void {
+  // Same-page anchors are allowed so CTA buttons can target on-page sections.
+  if (url.startsWith('#')) {
+    if (!/^#[a-z0-9-]+$/.test(url)) {
+      throw new Error(
+        `Section "${sectionId}" (type: cta) buttonUrl must be a valid same-page anchor (for example "#contact"). Got: ${url}`
+      )
+    }
+
+    return
+  }
+
   let parsed: URL
 
   try {
@@ -126,6 +137,19 @@ function validateSection(section: Section): void {
         }
       }
 
+      // Every card must behave the same way: either all items expose
+      // expandable details or none do. A partial configuration would make
+      // some cards expand while others fall back to a different control.
+      const itemsWithDetails = section.items.filter(
+        (item) => Array.isArray(item.details) && item.details.length > 0
+      ).length
+
+      if (itemsWithDetails > 0 && itemsWithDetails !== section.items.length) {
+        throw new Error(
+          `Section "${section.id}" (type: features) must configure details for every item or for none; found details on ${itemsWithDetails} of ${section.items.length} items`
+        )
+      }
+
       break
     }
 
@@ -146,9 +170,15 @@ function validateSection(section: Section): void {
     }
 
     case 'cta': {
-      if (!section.buttonText) {
+      if (section.buttonText && !section.buttonUrl) {
         throw new Error(
-          `Section "${section.id}" (type: cta) must have buttonText`
+          `Section "${section.id}" (type: cta) must have buttonUrl when buttonText is provided`
+        )
+      }
+
+      if (section.buttonUrl && !section.buttonText) {
+        throw new Error(
+          `Section "${section.id}" (type: cta) must have buttonText when buttonUrl is provided`
         )
       }
 
