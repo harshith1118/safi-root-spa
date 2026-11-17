@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/root-spa.schema.json",
+  "title": "Root SPA Initial Context",
+  "description": "Schema for validating Root SPA landing page configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "templateVersion",
+    "pathName",
+    "displayName",
+    "title",
+    "subtitle",
+    "theme",
+    "sections"
+  ],
+  "properties": {
+    "templateVersion": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version of the template"
+    },
+    "pathName": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "URL-safe path identifier using lowercase letters, numbers, and hyphens"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
+      "description": "Human-readable display name"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Page title"
+    },
+    "subtitle": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300,
+      "description": "Page subtitle"
+    },
+    "theme": {
+      "type": "string",
+      "enum": ["clean", "modern", "classic", "minimal"],
+      "description": "Visual theme identifier"
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "heading", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "Unique section identifier"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["hero", "features", "text", "cta", "testimonials", "gallery", "faq"],
+            "description": "Section type"
+          },
+          "heading": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 150,
+            "description": "Section heading"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000,
+            "description": "Section description"
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["title", "description"],
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 100
+                },
+                "description": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                }
+              }
+            },
+            "description": "List items for features section"
+          },
+          "buttonText": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "description": "Call-to-action button text"
+          },
+          "buttonUrl": {
+            "type": "string",
+            "format": "uri",
+            "description": "Call-to-action button URL"
+          }
+        }
+      },
+      "description": "Array of content sections"
+    }
+  }
+}
